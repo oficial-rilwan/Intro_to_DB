@@ -7,23 +7,21 @@ config = {
     'host': 'localhost'
 }
 
-DB_NAME = 'alx_book_store'
-
 try:
     cnx = mysql.connector.connect(**config)
     cursor = cnx.cursor()
 
     try:
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
-        cursor.execute(f"USE {DB_NAME}")
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS alx_book_store")
+        cursor.execute(f"USE alx_book_store")
         cursor.execute("SELECT DATABASE()")
         current_db = cursor.fetchone()
-        if current_db and current_db[0] == DB_NAME:
+        if current_db and current_db[0] == "alx_book_store":
             cursor.execute(f"SHOW TABLES LIKE 'dummy_table'")
             if cursor.fetchone() is None:
-                print(f"Database '{DB_NAME}' created successfully!")
+                print(f"Database 'alx_book_store' created successfully!")
             else:
-                print(f"Database '{DB_NAME}' already exists.")
+                print(f"Database 'alx_book_store' already exists.")
     except mysql.connector.Error as err:
         print(f"Failed creating database: {err}")
         exit(1)
