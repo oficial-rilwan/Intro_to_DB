@@ -1,39 +1,27 @@
 import mysql.connector
 from mysql.connector import errorcode
 
+# Configuration for MySQL connection
 config = {
     'user': 'root',
-    'password': '******',
+    'password': '*********',
     'host': 'localhost'
 }
 
 try:
-    cnx = mysql.connector.connect(**config)
-    cursor = cnx.cursor()
-
-    try:
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS alx_book_store")
-        cursor.execute(f"USE alx_book_store")
-        cursor.execute("SELECT DATABASE()")
-        current_db = cursor.fetchone()
-        if current_db and current_db[0] == "alx_book_store":
-            cursor.execute(f"SHOW TABLES LIKE 'dummy_table'")
-            if cursor.fetchone() is None:
-                print(f"Database 'alx_book_store' created successfully!")
-            else:
-                print(f"Database 'alx_book_store' already exists.")
-    except mysql.connector.Error as err:
-        print(f"Failed creating database: {err}")
-        exit(1)
-
-    cursor.close()
-    cnx.close()
-
+    connection = mysql.connector.connect(**config)
+    cursor = connection.cursor()
+    
+    cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
+    print("Database alx_book_store created successfully or already exists.")
+    
 except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        print("Something is wrong with your user name or password")
-    elif err.errno == errorcode.ER_BAD_DB_ERROR:
-        print("Database does not exist")
+    if err.errno == errorcode.ER_DB_CREATE_EXISTS:
+        print("Database alx_book_store already exists.")
     else:
-        print(err)
-
+        print(f"Failed creating database: {err}")
+finally:
+    if 'cursor' in locals():
+        cursor.close()
+    if 'connection' in locals():
+        connection.close()
